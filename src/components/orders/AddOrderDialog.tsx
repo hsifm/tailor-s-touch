@@ -41,12 +41,8 @@ import { Plus, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const GARMENT_TYPES = [
-  { value: 'suit', label: 'Suit' },
   { value: 'shirt', label: 'Shirt' },
-  { value: 'trousers', label: 'Trousers' },
   { value: 'dress', label: 'Dress' },
-  { value: 'coat', label: 'Coat' },
-  { value: 'vest', label: 'Vest' },
   { value: 'alteration', label: 'Alteration' },
   { value: 'embroidery_logo', label: 'Embroidery - Logo' },
   { value: 'embroidery_monogram', label: 'Embroidery - Monogram' },

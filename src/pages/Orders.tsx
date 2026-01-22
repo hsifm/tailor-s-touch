@@ -39,12 +39,8 @@ const STATUS_OPTIONS = [
 ];
 
 const GARMENT_LABELS: Record<string, string> = {
-  suit: 'Suit',
   shirt: 'Shirt',
-  trousers: 'Trousers',
   dress: 'Dress',
-  coat: 'Coat',
-  vest: 'Vest',
   alteration: 'Alteration',
   embroidery_logo: 'Embroidery - Logo',
   embroidery_monogram: 'Embroidery - Monogram',

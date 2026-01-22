@@ -34,12 +34,8 @@ export interface Order {
 }
 
 export type GarmentType = 
-  | 'suit'
   | 'shirt'
-  | 'trousers'
   | 'dress'
-  | 'coat'
-  | 'vest'
   | 'alteration'
   | 'embroidery_logo'
   | 'embroidery_monogram'
