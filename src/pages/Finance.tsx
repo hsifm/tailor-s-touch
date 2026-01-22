@@ -1,8 +1,11 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { AddExpenseDialog } from '@/components/finance/AddExpenseDialog';
+import { AddPaymentDialog } from '@/components/finance/AddPaymentDialog';
+import { PaymentHistory } from '@/components/finance/PaymentHistory';
 import { useOrders } from '@/hooks/useOrders';
 import { useExpenses, EXPENSE_CATEGORIES } from '@/hooks/useExpenses';
+import { usePayments } from '@/hooks/usePayments';
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { formatCurrency } from '@/lib/currency';
 import { DollarSign, TrendingUp, TrendingDown, CreditCard, Wallet, Receipt, Trash2 } from 'lucide-react';
@@ -34,15 +37,18 @@ import {
 export default function Finance() {
   const { orders, isLoading: ordersLoading } = useOrders();
   const { expenses, isLoading: expensesLoading, deleteExpense } = useExpenses();
+  const { payments, isLoading: paymentsLoading } = usePayments();
 
-  const isLoading = ordersLoading || expensesLoading;
+  const isLoading = ordersLoading || expensesLoading || paymentsLoading;
 
   // Calculate financial metrics
   const totalRevenue = orders.reduce((sum, order) => sum + order.price, 0);
+  const totalPayments = payments.reduce((sum, payment) => sum + payment.amount, 0);
   const totalDeposits = orders.reduce((sum, order) => sum + order.deposit, 0);
-  const outstandingBalance = totalRevenue - totalDeposits;
+  const totalCollected = totalDeposits + totalPayments; // Deposits + additional payments
+  const outstandingBalance = totalRevenue - totalCollected;
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const netProfit = totalDeposits - totalExpenses;
+  const netProfit = totalCollected - totalExpenses;
 
   // Generate monthly data for the last 6 months
   const monthlyData = Array.from({ length: 6 }, (_, i) => {
@@ -106,8 +112,8 @@ export default function Finance() {
               icon={DollarSign}
             />
             <StatCard
-              title="Deposits Received"
-              value={formatCurrency(totalDeposits)}
+              title="Total Collected"
+              value={formatCurrency(totalCollected)}
               icon={CreditCard}
             />
             <StatCard
@@ -250,16 +256,31 @@ export default function Finance() {
             </div>
           </div>
 
-          {/* Tabs for Orders and Expenses */}
-          <Tabs defaultValue="orders" className="space-y-6">
+          {/* Tabs for Orders, Payments, and Expenses */}
+          <Tabs defaultValue="payments" className="space-y-6">
             <div className="flex items-center justify-between">
               <TabsList>
-                <TabsTrigger value="orders">Order Payments</TabsTrigger>
+                <TabsTrigger value="payments">Payments</TabsTrigger>
+                <TabsTrigger value="orders">Order Balances</TabsTrigger>
                 <TabsTrigger value="expenses">Expenses</TabsTrigger>
                 <TabsTrigger value="summary">Summary</TabsTrigger>
               </TabsList>
-              <AddExpenseDialog />
+              <div className="flex gap-2">
+                <AddPaymentDialog />
+                <AddExpenseDialog />
+              </div>
             </div>
+
+            {/* Payments Tab */}
+            <TabsContent value="payments">
+              <div className="bg-card rounded-xl border border-border shadow-soft overflow-hidden animate-fade-in">
+                <div className="p-6 border-b border-border">
+                  <h2 className="font-serif text-xl font-semibold text-foreground">Payment History</h2>
+                  <p className="text-sm text-muted-foreground mt-1">All recorded customer payments</p>
+                </div>
+                <PaymentHistory />
+              </div>
+            </TabsContent>
 
             {/* Order Payments Tab */}
             <TabsContent value="orders">
