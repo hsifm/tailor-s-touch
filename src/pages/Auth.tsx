@@ -77,7 +77,7 @@ export default function Auth() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
             <Scissors className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-serif font-bold text-foreground">StitchCraft</h1>
+          <h1 className="text-3xl font-serif font-bold text-foreground">Blume</h1>
           <p className="text-muted-foreground mt-2">Tailoring & Embroidery Management</p>
         </div>
 

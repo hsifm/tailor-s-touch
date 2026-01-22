@@ -30,7 +30,7 @@ export function Sidebar() {
           <Scissors className="w-5 h-5 text-primary-foreground" />
         </div>
         <div>
-          <h1 className="font-serif text-xl font-semibold text-foreground">StitchCraft</h1>
+          <h1 className="font-serif text-xl font-semibold text-foreground">Blume</h1>
           <p className="text-xs text-muted-foreground tracking-wide">Tailoring & Embroidery</p>
         </div>
       </div>
