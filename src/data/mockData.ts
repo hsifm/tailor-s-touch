@@ -65,14 +65,14 @@ export const mockOrders: Order[] = [
     id: '1',
     customerId: '1',
     customerName: 'James Whitmore',
-    description: 'Three-piece navy wool suit',
-    garmentType: 'suit',
+    description: 'Custom embroidered logo on uniforms',
+    garmentType: 'embroidery_logo',
     status: 'sewing',
     price: 2800,
     deposit: 1400,
     dueDate: new Date('2025-02-15'),
     createdAt: new Date('2025-01-10'),
-    notes: 'Peak lapels, working cuff buttons'
+    notes: 'Company logo placement on left chest'
   },
   {
     id: '2',
@@ -114,8 +114,8 @@ export const mockOrders: Order[] = [
     id: '5',
     customerId: '1',
     customerName: 'James Whitmore',
-    description: 'Cashmere overcoat - charcoal',
-    garmentType: 'coat',
+    description: 'Staff uniforms - 10 pieces',
+    garmentType: 'uniform',
     status: 'pending',
     price: 2200,
     deposit: 1100,
