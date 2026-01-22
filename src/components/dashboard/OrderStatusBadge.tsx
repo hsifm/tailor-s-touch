@@ -1,11 +1,10 @@
-import { OrderStatus } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface OrderStatusBadgeProps {
-  status: OrderStatus;
+  status: string;
 }
 
-const statusConfig: Record<OrderStatus, { label: string; className: string }> = {
+const statusConfig: Record<string, { label: string; className: string }> = {
   pending: { 
     label: 'Pending', 
     className: 'bg-amber-100 text-amber-700 border-amber-200' 
@@ -41,7 +40,10 @@ const statusConfig: Record<OrderStatus, { label: string; className: string }> = 
 };
 
 export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || { 
+    label: status, 
+    className: 'bg-gray-100 text-gray-600 border-gray-200' 
+  };
   
   return (
     <span className={cn(

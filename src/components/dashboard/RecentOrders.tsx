@@ -1,12 +1,12 @@
-import { Order } from '@/types';
+import { OrderData } from '@/hooks/useOrders';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/currency';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ClipboardList } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface RecentOrdersProps {
-  orders: Order[];
+  orders: OrderData[];
 }
 
 export function RecentOrders({ orders }: RecentOrdersProps) {
@@ -26,30 +26,46 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
         </Link>
       </div>
       
-      <div className="divide-y divide-border">
-        {orders.slice(0, 5).map((order, index) => (
-          <div 
-            key={order.id} 
-            className="p-4 hover:bg-secondary/50 transition-colors duration-200"
-            style={{ animationDelay: `${index * 50}ms` }}
+      {orders.length === 0 ? (
+        <div className="p-8 text-center">
+          <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
+          <p className="text-muted-foreground">No orders yet</p>
+          <Link 
+            to="/orders" 
+            className="text-sm text-primary hover:text-primary/80 font-medium mt-2 inline-block"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="font-medium text-foreground">{order.description}</p>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {order.customerName} • Due {format(order.dueDate, 'MMM d, yyyy')}
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-foreground">
-                  {formatCurrency(order.price)}
-                </span>
-                <OrderStatusBadge status={order.status} />
+            Create your first order
+          </Link>
+        </div>
+      ) : (
+        <div className="divide-y divide-border">
+          {orders.slice(0, 5).map((order, index) => (
+            <div 
+              key={order.id} 
+              className="p-4 hover:bg-secondary/50 transition-colors duration-200"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="font-medium text-foreground">
+                    {order.description || order.garment_type}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    {order.customer_name}
+                    {order.due_date && ` • Due ${format(new Date(order.due_date), 'MMM d, yyyy')}`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-foreground">
+                    {formatCurrency(Number(order.price))}
+                  </span>
+                  <OrderStatusBadge status={order.status} />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
