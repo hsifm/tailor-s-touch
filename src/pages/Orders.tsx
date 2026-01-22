@@ -3,10 +3,11 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { OrderStatusBadge } from '@/components/dashboard/OrderStatusBadge';
 import { AddOrderDialog } from '@/components/orders/AddOrderDialog';
-import { useOrders } from '@/hooks/useOrders';
+import { InvoiceModal } from '@/components/orders/InvoiceModal';
+import { useOrders, OrderData } from '@/hooks/useOrders';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/currency';
-import { Filter, Trash2, ClipboardList } from 'lucide-react';
+import { Filter, Trash2, ClipboardList, FileText } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -52,6 +53,8 @@ const GARMENT_LABELS: Record<string, string> = {
 export default function Orders() {
   const { orders, isLoading, deleteOrder } = useOrders();
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -159,7 +162,7 @@ export default function Orders() {
                 <TableHead className="font-semibold">Status</TableHead>
                 <TableHead className="font-semibold">Due Date</TableHead>
                 <TableHead className="font-semibold text-right">Price</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -204,14 +207,29 @@ export default function Orders() {
                     {formatCurrency(order.price)}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive h-8 w-8"
-                      onClick={() => deleteOrder.mutate(order.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary h-8 w-8"
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setInvoiceOpen(true);
+                        }}
+                        title="View Invoice"
+                      >
+                        <FileText className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive h-8 w-8"
+                        onClick={() => deleteOrder.mutate(order.id)}
+                        title="Delete Order"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -226,6 +244,13 @@ export default function Orders() {
           Showing {filteredOrders.length} of {orders.length} orders
         </div>
       )}
+
+      {/* Invoice Modal */}
+      <InvoiceModal 
+        order={selectedOrder} 
+        open={invoiceOpen} 
+        onOpenChange={setInvoiceOpen} 
+      />
     </MainLayout>
   );
 }
