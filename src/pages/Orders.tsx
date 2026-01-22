@@ -46,8 +46,6 @@ const GARMENT_LABELS: Record<string, string> = {
   embroidery_monogram: 'Embroidery - Monogram',
   embroidery_custom: 'Embroidery - Custom',
   embroidery_patch: 'Embroidery - Patch',
-  uniform: 'Uniform',
-  curtains: 'Curtains',
   other: 'Other',
 };
 

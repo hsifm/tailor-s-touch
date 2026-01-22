@@ -48,8 +48,6 @@ const GARMENT_TYPES = [
   { value: 'embroidery_monogram', label: 'Embroidery - Monogram' },
   { value: 'embroidery_custom', label: 'Embroidery - Custom Design' },
   { value: 'embroidery_patch', label: 'Embroidery - Patch' },
-  { value: 'uniform', label: 'Uniform' },
-  { value: 'curtains', label: 'Curtains' },
   { value: 'other', label: 'Other' },
 ];
 
