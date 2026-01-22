@@ -8,7 +8,8 @@ import {
   Ruler,
   Scissors,
   Wallet,
-  LogOut
+  LogOut,
+  Settings
 } from 'lucide-react';
 
 const navigation = [
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Customers', href: '/customers', icon: Users },
   { name: 'Measurements', href: '/measurements', icon: Ruler },
   { name: 'Finance', href: '/finance', icon: Wallet },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export function Sidebar() {
