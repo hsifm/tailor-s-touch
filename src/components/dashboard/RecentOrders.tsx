@@ -1,6 +1,7 @@
 import { Order } from '@/types';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import { format } from 'date-fns';
+import { formatCurrency } from '@/lib/currency';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -41,7 +42,7 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium text-foreground">
-                  ${order.price.toLocaleString()}
+                  {formatCurrency(order.price)}
                 </span>
                 <OrderStatusBadge status={order.status} />
               </div>

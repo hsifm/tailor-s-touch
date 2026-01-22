@@ -3,6 +3,7 @@ import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentOrders } from '@/components/dashboard/RecentOrders';
 import { CustomerList } from '@/components/dashboard/CustomerList';
 import { mockStats, mockOrders, mockCustomers } from '@/data/mockData';
+import { formatCurrency } from '@/lib/currency';
 import { 
   ClipboardList, 
   Users, 
@@ -33,7 +34,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Monthly Revenue"
-          value={`$${mockStats.monthlyRevenue.toLocaleString()}`}
+          value={formatCurrency(mockStats.monthlyRevenue)}
           icon={DollarSign}
           trend={{ value: 15, isPositive: true }}
         />
