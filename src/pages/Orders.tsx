@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { OrderStatusBadge } from '@/components/dashboard/OrderStatusBadge';
 import { mockOrders } from '@/data/mockData';
 import { format } from 'date-fns';
+import { formatCurrency } from '@/lib/currency';
 import { Plus, Filter } from 'lucide-react';
 import {
   Table,
@@ -67,7 +68,7 @@ export default function Orders() {
                   {format(order.dueDate, 'MMM d, yyyy')}
                 </TableCell>
                 <TableCell className="text-right font-medium text-foreground">
-                  ${order.price.toLocaleString()}
+                  {formatCurrency(order.price)}
                 </TableCell>
               </TableRow>
             ))}

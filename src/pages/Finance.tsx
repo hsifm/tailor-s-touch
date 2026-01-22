@@ -2,6 +2,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { mockOrders } from '@/data/mockData';
 import { format } from 'date-fns';
+import { formatCurrency } from '@/lib/currency';
 import { DollarSign, TrendingUp, CreditCard, Wallet } from 'lucide-react';
 import {
   Table,
@@ -27,23 +28,23 @@ export default function Finance() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Total Revenue"
-          value={`$${totalRevenue.toLocaleString()}`}
+          value={formatCurrency(totalRevenue)}
           icon={DollarSign}
           trend={{ value: 18, isPositive: true }}
         />
         <StatCard
           title="Deposits Received"
-          value={`$${totalDeposits.toLocaleString()}`}
+          value={formatCurrency(totalDeposits)}
           icon={CreditCard}
         />
         <StatCard
           title="Outstanding Balance"
-          value={`$${outstandingBalance.toLocaleString()}`}
+          value={formatCurrency(outstandingBalance)}
           icon={Wallet}
         />
         <StatCard
           title="Avg. Order Value"
-          value={`$${Math.round(totalRevenue / mockOrders.length).toLocaleString()}`}
+          value={formatCurrency(Math.round(totalRevenue / mockOrders.length))}
           icon={TrendingUp}
         />
       </div>
@@ -84,13 +85,13 @@ export default function Finance() {
                     {format(order.createdAt, 'MMM d, yyyy')}
                   </TableCell>
                   <TableCell className="text-right font-medium text-foreground">
-                    ${order.price.toLocaleString()}
+                    {formatCurrency(order.price)}
                   </TableCell>
                   <TableCell className="text-right text-muted-foreground">
-                    ${order.deposit.toLocaleString()}
+                    {formatCurrency(order.deposit)}
                   </TableCell>
                   <TableCell className="text-right font-medium text-foreground">
-                    ${balance.toLocaleString()}
+                    {formatCurrency(balance)}
                   </TableCell>
                   <TableCell>
                     <span className={cn(
