@@ -4,7 +4,8 @@ import {
   Users, 
   ClipboardList, 
   Ruler,
-  Scissors
+  Scissors,
+  Wallet
 } from 'lucide-react';
 
 const navigation = [
@@ -12,6 +13,7 @@ const navigation = [
   { name: 'Orders', href: '/orders', icon: ClipboardList },
   { name: 'Customers', href: '/customers', icon: Users },
   { name: 'Measurements', href: '/measurements', icon: Ruler },
+  { name: 'Finance', href: '/finance', icon: Wallet },
 ];
 
 export function Sidebar() {
