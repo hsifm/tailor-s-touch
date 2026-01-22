@@ -1,11 +1,14 @@
 import { NavLink } from '@/components/NavLink';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, 
   Users, 
   ClipboardList, 
   Ruler,
   Scissors,
-  Wallet
+  Wallet,
+  LogOut
 } from 'lucide-react';
 
 const navigation = [
@@ -17,6 +20,8 @@ const navigation = [
 ];
 
 export function Sidebar() {
+  const { user, signOut } = useAuth();
+
   return (
     <aside className="fixed inset-y-0 left-0 w-64 bg-card border-r border-border flex flex-col">
       {/* Logo */}
@@ -45,12 +50,22 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-border">
-        <div className="bg-secondary rounded-lg p-4">
-          <p className="text-xs text-muted-foreground mb-1">Need help?</p>
-          <p className="text-sm font-medium text-foreground">View Documentation</p>
-        </div>
+      {/* User & Logout */}
+      <div className="p-4 border-t border-border space-y-3">
+        {user && (
+          <div className="px-3 py-2">
+            <p className="text-xs text-muted-foreground">Signed in as</p>
+            <p className="text-sm font-medium text-foreground truncate">{user.email}</p>
+          </div>
+        )}
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive"
+          onClick={signOut}
+        >
+          <LogOut className="w-4 h-4" />
+          Sign Out
+        </Button>
       </div>
     </aside>
   );
