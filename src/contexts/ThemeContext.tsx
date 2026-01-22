@@ -14,14 +14,52 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const accentColors: Record<AccentColor, { light: string; dark: string }> = {
-  gold: { light: '36 45% 45%', dark: '36 50% 55%' },
-  blue: { light: '220 70% 50%', dark: '220 70% 60%' },
-  green: { light: '150 60% 40%', dark: '150 60% 50%' },
-  purple: { light: '270 60% 50%', dark: '270 60% 60%' },
-  rose: { light: '350 65% 55%', dark: '350 65% 65%' },
-  orange: { light: '25 90% 50%', dark: '25 90% 60%' },
+// Define both light and dark variants for each accent color
+const accentColors: Record<AccentColor, { 
+  light: { primary: string; primaryForeground: string }; 
+  dark: { primary: string; primaryForeground: string };
+}> = {
+  gold: { 
+    light: { primary: '36 45% 45%', primaryForeground: '40 30% 98%' },
+    dark: { primary: '36 50% 55%', primaryForeground: '30 10% 10%' }
+  },
+  blue: { 
+    light: { primary: '220 70% 50%', primaryForeground: '0 0% 100%' },
+    dark: { primary: '220 70% 60%', primaryForeground: '220 70% 10%' }
+  },
+  green: { 
+    light: { primary: '150 60% 40%', primaryForeground: '0 0% 100%' },
+    dark: { primary: '150 60% 50%', primaryForeground: '150 60% 10%' }
+  },
+  purple: { 
+    light: { primary: '270 60% 50%', primaryForeground: '0 0% 100%' },
+    dark: { primary: '270 60% 60%', primaryForeground: '270 60% 10%' }
+  },
+  rose: { 
+    light: { primary: '350 65% 55%', primaryForeground: '0 0% 100%' },
+    dark: { primary: '350 65% 65%', primaryForeground: '350 65% 10%' }
+  },
+  orange: { 
+    light: { primary: '25 90% 50%', primaryForeground: '0 0% 100%' },
+    dark: { primary: '25 90% 60%', primaryForeground: '25 90% 10%' }
+  },
 };
+
+function applyAccentColor(accentColor: AccentColor, isDark: boolean) {
+  const root = document.documentElement;
+  const colors = accentColors[accentColor];
+  const colorSet = isDark ? colors.dark : colors.light;
+
+  // Update all primary-related CSS variables
+  root.style.setProperty('--primary', colorSet.primary);
+  root.style.setProperty('--primary-foreground', colorSet.primaryForeground);
+  root.style.setProperty('--accent', colorSet.primary);
+  root.style.setProperty('--accent-foreground', colorSet.primaryForeground);
+  root.style.setProperty('--ring', colorSet.primary);
+  root.style.setProperty('--sidebar-primary', colorSet.primary);
+  root.style.setProperty('--sidebar-primary-foreground', colorSet.primaryForeground);
+  root.style.setProperty('--sidebar-ring', colorSet.primary);
+}
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -54,24 +92,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('compactMode', String(compact));
   };
 
+  // Apply theme and accent color
   useEffect(() => {
     const root = document.documentElement;
     
-    // Handle theme
+    // Determine effective theme
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     const effectiveTheme = theme === 'system' ? systemTheme : theme;
+    const isDark = effectiveTheme === 'dark';
     
+    // Apply theme class
     root.classList.remove('light', 'dark');
     root.classList.add(effectiveTheme);
 
-    // Handle accent color
-    const colors = accentColors[accentColor];
-    const colorValue = effectiveTheme === 'dark' ? colors.dark : colors.light;
-    root.style.setProperty('--primary', colorValue);
-    root.style.setProperty('--accent', colorValue);
-    root.style.setProperty('--ring', colorValue);
-    root.style.setProperty('--sidebar-primary', colorValue);
-    root.style.setProperty('--sidebar-ring', colorValue);
+    // Apply accent color with correct theme variant
+    applyAccentColor(accentColor, isDark);
 
     // Handle compact mode
     if (compactMode) {
@@ -87,14 +122,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const handleChange = () => {
       if (theme === 'system') {
         const root = document.documentElement;
+        const isDark = mediaQuery.matches;
         root.classList.remove('light', 'dark');
-        root.classList.add(mediaQuery.matches ? 'dark' : 'light');
+        root.classList.add(isDark ? 'dark' : 'light');
+        applyAccentColor(accentColor, isDark);
       }
     };
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme]);
+  }, [theme, accentColor]);
+
+  // Apply accent color on initial mount
+  useEffect(() => {
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const effectiveTheme = theme === 'system' ? systemTheme : theme;
+    applyAccentColor(accentColor, effectiveTheme === 'dark');
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ 
