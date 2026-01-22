@@ -41,6 +41,12 @@ export type GarmentType =
   | 'coat'
   | 'vest'
   | 'alteration'
+  | 'embroidery_logo'
+  | 'embroidery_monogram'
+  | 'embroidery_custom'
+  | 'embroidery_patch'
+  | 'uniform'
+  | 'curtains'
   | 'other';
 
 export type OrderStatus = 
