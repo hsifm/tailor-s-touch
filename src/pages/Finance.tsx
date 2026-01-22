@@ -3,7 +3,7 @@ import { StatCard } from '@/components/dashboard/StatCard';
 import { AddExpenseDialog } from '@/components/finance/AddExpenseDialog';
 import { useOrders } from '@/hooks/useOrders';
 import { useExpenses, EXPENSE_CATEGORIES } from '@/hooks/useExpenses';
-import { format } from 'date-fns';
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { formatCurrency } from '@/lib/currency';
 import { DollarSign, TrendingUp, TrendingDown, CreditCard, Wallet, Receipt, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,6 +18,18 @@ import {
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend,
+} from 'recharts';
 
 export default function Finance() {
   const { orders, isLoading: ordersLoading } = useOrders();
@@ -30,7 +42,35 @@ export default function Finance() {
   const totalDeposits = orders.reduce((sum, order) => sum + order.deposit, 0);
   const outstandingBalance = totalRevenue - totalDeposits;
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const netProfit = totalDeposits - totalExpenses; // Using deposits as actual income received
+  const netProfit = totalDeposits - totalExpenses;
+
+  // Generate monthly data for the last 6 months
+  const monthlyData = Array.from({ length: 6 }, (_, i) => {
+    const date = subMonths(new Date(), 5 - i);
+    const monthStart = startOfMonth(date);
+    const monthEnd = endOfMonth(date);
+
+    const monthRevenue = orders
+      .filter(order => {
+        const orderDate = new Date(order.created_at);
+        return isWithinInterval(orderDate, { start: monthStart, end: monthEnd });
+      })
+      .reduce((sum, order) => sum + order.deposit, 0);
+
+    const monthExpenses = expenses
+      .filter(expense => {
+        const expenseDate = new Date(expense.expense_date);
+        return isWithinInterval(expenseDate, { start: monthStart, end: monthEnd });
+      })
+      .reduce((sum, expense) => sum + expense.amount, 0);
+
+    return {
+      month: format(date, 'MMM'),
+      revenue: monthRevenue,
+      expenses: monthExpenses,
+      profit: monthRevenue - monthExpenses,
+    };
+  });
 
   // Group expenses by category
   const expensesByCategory = expenses.reduce((acc, expense) => {
@@ -86,6 +126,98 @@ export default function Finance() {
               icon={netProfit >= 0 ? TrendingUp : TrendingDown}
               trend={netProfit >= 0 ? { value: 0, isPositive: true } : { value: 0, isPositive: false }}
             />
+          </div>
+
+          {/* Monthly Revenue Chart */}
+          <div className="bg-card rounded-xl border border-border shadow-soft p-6 mb-8 animate-fade-in">
+            <h2 className="font-serif text-xl font-semibold text-foreground mb-6">Monthly Overview</h2>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis 
+                    dataKey="month" 
+                    className="text-muted-foreground"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                  />
+                  <YAxis 
+                    className="text-muted-foreground"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '0.5rem',
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Legend />
+                  <Bar 
+                    dataKey="revenue" 
+                    name="Revenue" 
+                    fill="hsl(var(--primary))" 
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar 
+                    dataKey="expenses" 
+                    name="Expenses" 
+                    fill="hsl(var(--destructive))" 
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Profit Trend Chart */}
+          <div className="bg-card rounded-xl border border-border shadow-soft p-6 mb-8 animate-fade-in">
+            <h2 className="font-serif text-xl font-semibold text-foreground mb-6">Profit Trend</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                  />
+                  <YAxis 
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '0.5rem',
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="profit" 
+                    name="Net Profit"
+                    stroke="hsl(var(--primary))" 
+                    fillOpacity={1}
+                    fill="url(#profitGradient)"
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           {/* Profit Indicator */}
