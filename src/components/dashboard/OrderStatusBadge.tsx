@@ -9,25 +9,17 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     label: 'Pending', 
     className: 'bg-amber-100 text-amber-700 border-amber-200' 
   },
-  measuring: { 
-    label: 'Measuring', 
-    className: 'bg-blue-100 text-blue-700 border-blue-200' 
-  },
   cutting: { 
     label: 'Cutting', 
     className: 'bg-purple-100 text-purple-700 border-purple-200' 
   },
-  sewing: { 
-    label: 'Sewing', 
+  embroidery: { 
+    label: 'Embroidery', 
+    className: 'bg-blue-100 text-blue-700 border-blue-200' 
+  },
+  tailoring: { 
+    label: 'Tailoring', 
     className: 'bg-indigo-100 text-indigo-700 border-indigo-200' 
-  },
-  fitting: { 
-    label: 'Fitting', 
-    className: 'bg-cyan-100 text-cyan-700 border-cyan-200' 
-  },
-  finishing: { 
-    label: 'Finishing', 
-    className: 'bg-teal-100 text-teal-700 border-teal-200' 
   },
   ready: { 
     label: 'Ready', 

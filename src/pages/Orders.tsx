@@ -30,11 +30,9 @@ import { useToast } from '@/hooks/use-toast';
 
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending' },
-  { value: 'measuring', label: 'Measuring' },
   { value: 'cutting', label: 'Cutting' },
-  { value: 'sewing', label: 'Sewing' },
-  { value: 'fitting', label: 'Fitting' },
-  { value: 'finishing', label: 'Finishing' },
+  { value: 'embroidery', label: 'Embroidery' },
+  { value: 'tailoring', label: 'Tailoring' },
   { value: 'ready', label: 'Ready' },
   { value: 'delivered', label: 'Delivered' },
 ];
