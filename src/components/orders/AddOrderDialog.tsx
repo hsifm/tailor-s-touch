@@ -44,10 +44,9 @@ const GARMENT_TYPES = [
   { value: 'shirt', label: 'Shirt' },
   { value: 'dress', label: 'Dress' },
   { value: 'alteration', label: 'Alteration' },
-  { value: 'embroidery_logo', label: 'Embroidery - Logo' },
-  { value: 'embroidery_monogram', label: 'Embroidery - Monogram' },
   { value: 'embroidery_custom', label: 'Embroidery - Custom Design' },
-  { value: 'embroidery_patch', label: 'Embroidery - Patch' },
+  { value: 'embroidery', label: 'Embroidery' },
+  { value: 'jalabiya', label: 'Jalabiya' },
   { value: 'other', label: 'Other' },
 ];
 
