@@ -41,12 +41,12 @@ import { Plus, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const GARMENT_TYPES = [
+  { value: 'alteration', label: 'Alteration' },
   { value: 'shirt', label: 'Shirt' },
   { value: 'dress', label: 'Dress' },
-  { value: 'alteration', label: 'Alteration' },
-  { value: 'embroidery_custom', label: 'Embroidery - Custom Design' },
-  { value: 'embroidery', label: 'Embroidery' },
   { value: 'jalabiya', label: 'Jalabiya' },
+  { value: 'embroidery', label: 'Embroidery' },
+  { value: 'embroidery_custom', label: 'Embroidery - Custom Design' },
   { value: 'other', label: 'Other' },
 ];
 
